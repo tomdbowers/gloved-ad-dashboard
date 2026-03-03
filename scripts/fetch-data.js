@@ -18,7 +18,11 @@ if (!ACCESS_TOKEN) {
 
 const API_VERSION = 'v21.0';
 const BASE = `https://graph.facebook.com/${API_VERSION}`;
-const MIN_SPEND = 40; // £20/week × 2 weeks = £40 over 14-day window
+const WINDOWS = {
+  '7':  { preset: 'last_7d',  minSpend: 20,  label: 'Last 7 Days' },
+  '14': { preset: 'last_14d', minSpend: 40,  label: 'Last 14 Days' },
+  '30': { preset: 'last_30d', minSpend: 80,  label: 'Last 30 Days' },
+};
 
 // ─── HTTP helper ────────────────────────────────────────────
 function fetchJSON(url) {
@@ -46,7 +50,7 @@ async function getAdAccounts() {
   return res.data || [];
 }
 
-async function getAdInsights(accountId) {
+async function getAdInsights(accountId, datePreset) {
   const fields = [
     'ad_name', 'campaign_name', 'adset_name',
     'spend', 'impressions', 'clicks', 'inline_link_clicks', 'ctr',
@@ -57,7 +61,7 @@ async function getAdInsights(accountId) {
   ].join(',');
 
   let all = [];
-  let url = `${BASE}/${accountId}/insights?level=ad&fields=${fields}&date_preset=last_14d&limit=200&access_token=${ACCESS_TOKEN}`;
+  let url = `${BASE}/${accountId}/insights?level=ad&fields=${fields}&date_preset=${datePreset}&limit=200&access_token=${ACCESS_TOKEN}`;
 
   while (url) {
     const res = await fetchJSON(url);
@@ -152,9 +156,9 @@ function deriveTag(campaignName, adsetName, adName) {
 }
 
 // ─── Transform one API row → ADS entry ──────────────────────
-function transformRow(row) {
+function transformRow(row, minSpend) {
   const spend = parseFloat(row.spend || 0);
-  if (spend < MIN_SPEND) return null;
+  if (spend < minSpend) return null;
 
   const impressions = parseInt(row.impressions || 0);
   const clicks      = parseInt(row.clicks || 0);
@@ -207,19 +211,24 @@ async function main() {
   const accounts = await getAdAccounts();
   if (accounts.length === 0) throw new Error('No ad accounts found for this token');
 
-  let allAds = [];
+  const adsByWindow = {};
 
-  for (const acct of accounts) {
-    console.log(`📊 Fetching ads from ${acct.name || acct.id} (${acct.currency || '?'})…`);
-    const rows = await getAdInsights(acct.id);
-    console.log(`   → ${rows.length} ad rows returned`);
-    const ads = rows.map(transformRow).filter(Boolean);
-    allAds = allAds.concat(ads);
+  for (const [key, cfg] of Object.entries(WINDOWS)) {
+    console.log(`\n⏱  Fetching ${cfg.label}…`);
+    let allAds = [];
+
+    for (const acct of accounts) {
+      console.log(`   📊 ${acct.name || acct.id} (${acct.currency || '?'})…`);
+      const rows = await getAdInsights(acct.id, cfg.preset);
+      console.log(`      → ${rows.length} ad rows`);
+      const ads = rows.map(r => transformRow(r, cfg.minSpend)).filter(Boolean);
+      allAds = allAds.concat(ads);
+    }
+
+    allAds.sort((a, b) => b.spend - a.spend);
+    adsByWindow[key] = allAds;
+    console.log(`   ✅ ${allAds.length} qualifying ads (spend ≥ £${cfg.minSpend})`);
   }
-
-  // Sort by spend descending
-  allAds.sort((a, b) => b.spend - a.spend);
-  console.log(`✅ ${allAds.length} qualifying ads (spend ≥ £${MIN_SPEND})`);
 
   // ── Update index.html ──
   const htmlPath = path.join(__dirname, '..', 'index.html');
@@ -232,15 +241,15 @@ async function main() {
 
   const block = [
     '// __ADS_DATA_START__',
-    '// RAW AD DATA (Last 14 Days - pulled from Meta Ads)',
+    '// RAW AD DATA — multi-window (pulled from Meta Ads)',
     `// Auto-generated ${new Date().toISOString().slice(0, 10)}`,
-    `const ADS = ${JSON.stringify(allAds, null, 2)};`,
+    `const ADS_BY_WINDOW = ${JSON.stringify(adsByWindow, null, 2)};`,
     '// __ADS_DATA_END__'
   ].join('\n');
 
   html = html.replace(marker, block);
   fs.writeFileSync(htmlPath, html, 'utf-8');
-  console.log('📝 index.html updated with fresh data');
+  console.log('\n📝 index.html updated with fresh data (7d / 14d / 30d)');
 }
 
 main().catch(err => {
