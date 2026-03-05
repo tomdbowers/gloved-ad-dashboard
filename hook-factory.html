@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gloved — Creative Performance</title>
+<title>Gloved — Hook Factory</title>
 <style>
   @font-face {
     font-family: 'Larish Alte';
@@ -15,12 +15,6 @@
     font-family: 'Apta';
     src: url('assets/fonts/apta-regular.ttf') format('truetype');
     font-weight: 400;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Apta';
-    src: url('assets/fonts/apta-medium.ttf') format('truetype');
-    font-weight: 500;
     font-style: normal;
   }
   @font-face {
@@ -80,411 +74,6 @@
     padding: 40px 32px;
   }
 
-  /* ─── HEADER ─── */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-    gap: 16px;
-  }
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .header-logo {
-    height: 32px;
-    width: auto;
-  }
-  .header-divider {
-    width: 1px;
-    height: 28px;
-    background: var(--pale-sage);
-  }
-  .header-text h1 {
-    font-family: 'Larish Alte', Georgia, serif;
-    font-size: 26px;
-    font-weight: 600;
-    letter-spacing: 0.3px;
-    color: var(--bottle-green);
-  }
-  .header-text .subtitle {
-    color: var(--olive);
-    font-size: 13px;
-    margin-top: 3px;
-    font-weight: 400;
-  }
-  .data-date-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-family: 'Apta', sans-serif;
-    text-align: right;
-    padding-top: 8px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .window-select {
-    font-family: 'Apta', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--bottle-green);
-    background: var(--cream);
-    border: 1.5px solid var(--gold);
-    border-radius: 6px;
-    padding: 5px 10px;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .window-select:hover,
-  .window-select:focus {
-    border-color: var(--bottle-green);
-  }
-
-  /* ─── OVERVIEW BAR ─── */
-  .overview-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-    margin-bottom: 44px;
-  }
-  .overview-stat {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    text-align: center;
-    position: relative;
-  }
-  .overview-stat::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 20%;
-    right: 20%;
-    height: 2px;
-    background: var(--gold);
-    border-radius: 1px;
-  }
-  .overview-stat .stat-value {
-    font-family: 'Larish Alte', Georgia, serif;
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--bottle-green);
-  }
-  .overview-stat .stat-label {
-    font-size: 10px;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--olive);
-    margin-top: 4px;
-  }
-
-  /* ─── SECTIONS ─── */
-  .section {
-    margin-bottom: 52px;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-  .section-icon.spend { background: rgba(201,185,145,0.18); }
-  .section-icon.hook { background: rgba(71,71,41,0.08); }
-  .section-icon.hold { background: rgba(96,96,70,0.10); }
-  .section-icon.conv { background: rgba(90,122,82,0.10); }
-
-  .section-title {
-    font-family: 'Larish Alte', Georgia, serif;
-    font-size: 19px;
-    font-weight: 600;
-    color: var(--bottle-green);
-    letter-spacing: 0.2px;
-  }
-  .section-desc {
-    font-size: 12px;
-    color: var(--olive);
-    margin-top: 3px;
-    line-height: 1.5;
-  }
-
-  /* ─── CARD GRID ─── */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 14px;
-  }
-  @media (max-width: 1100px) { .card-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 20px;
-    position: relative;
-    transition: all 0.2s ease;
-    overflow: hidden;
-  }
-  .card:hover {
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(71,71,41,0.08);
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 10px 10px 0 0;
-  }
-  .card.rank-1::before { background: linear-gradient(90deg, #C9B991, #a89860); }
-  .card.rank-2::before { background: linear-gradient(90deg, #B7B7A8, #D3D3C7); }
-  .card.rank-3::before { background: linear-gradient(90deg, #989885, #B7B7A8); }
-  .card.rank-4::before,
-  .card.rank-5::before,
-  .card.rank-6::before,
-  .card.rank-7::before,
-  .card.rank-8::before { background: var(--border); }
-
-  .card.worst::before { background: linear-gradient(90deg, #a04040, #c06060); }
-  .card.best::before { background: linear-gradient(90deg, #5a7a52, #7a9a6a); }
-
-  .card-rank {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text-muted);
-    background: var(--off-white);
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--bottle-green);
-    margin-bottom: 2px;
-    padding-right: 30px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .card-tag {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    margin-bottom: 14px;
-  }
-
-  .card-metric {
-    font-family: 'Larish Alte', Georgia, serif;
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: -0.5px;
-    line-height: 1;
-    margin-bottom: 14px;
-  }
-  .card-metric.spend-color { color: var(--bottle-green); }
-  .card-metric.hook-color { color: var(--dark-green); }
-  .card-metric.hold-color { color: var(--dark-green); }
-  .card-metric.conv-good { color: var(--green); }
-  .card-metric.conv-bad { color: var(--red); }
-
-  .card-stats {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .card-stats.three-col {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-  .mini-stat {
-    background: var(--off-white);
-    border-radius: 6px;
-    padding: 8px 10px;
-  }
-  .mini-stat .ms-val {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--bottle-green);
-  }
-  .mini-stat .ms-label {
-    font-size: 9px;
-    color: var(--text-muted);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  /* ─── CONVERSION SPLIT ─── */
-  .conv-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-  @media (max-width: 900px) { .conv-split { grid-template-columns: 1fr; } }
-
-  .conv-group h3 {
-    font-family: 'Apta', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--bottle-green);
-  }
-  .conv-group h3 .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-  .conv-group h3 .dot.green { background: var(--green); }
-  .conv-group h3 .dot.red { background: var(--red); }
-
-  .conv-group .card-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 600px) { .conv-group .card-grid { grid-template-columns: 1fr; } }
-
-  /* ─── FOOTER ─── */
-  .footer {
-    text-align: center;
-    padding: 28px 24px;
-    color: var(--text-muted);
-    font-size: 11px;
-    border-top: 1px solid var(--border);
-    margin-top: 40px;
-    letter-spacing: 0.3px;
-  }
-  .footer .gold-line {
-    width: 60px;
-    height: 2px;
-    background: var(--gold);
-    margin: 0 auto 14px;
-    border-radius: 1px;
-  }
-
-  /* ─── WHAT-TO-DO LABELS ─── */
-  .insight-badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-left: auto;
-  }
-  .insight-badge.iterate { background: rgba(71,71,41,0.08); color: var(--dark-green); }
-  .insight-badge.scale { background: rgba(90,122,82,0.08); color: var(--green); }
-  .insight-badge.cut { background: rgba(160,64,64,0.08); color: var(--red); }
-
-  /* ─── ITERATION OPPORTUNITIES ─── */
-  .section-icon.iterate { background: rgba(201,185,145,0.15); }
-  .opp-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
-    gap: 14px;
-  }
-  .opp-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 18px 20px;
-    border-left: 4px solid var(--sage);
-    transition: box-shadow .15s;
-  }
-  .opp-card:hover { box-shadow: 0 2px 12px rgba(71,71,41,0.08); }
-  .opp-card.fix-middle   { border-left-color: var(--orange); }
-  .opp-card.new-hook     { border-left-color: var(--blue); }
-  .opp-card.high-spend-fix { border-left-color: var(--red); }
-  .opp-card.unlock-scale { border-left-color: var(--green); }
-  .opp-card.extend-winner { border-left-color: var(--gold); }
-  .opp-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-  }
-  .opp-badge {
-    font-size: 10px;
-    font-weight: 700;
-    font-family: 'Apta', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding: 3px 9px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-  .opp-badge.fix-middle   { background: rgba(150,132,58,0.12); color: var(--orange); }
-  .opp-badge.new-hook     { background: rgba(74,106,92,0.12); color: var(--blue); }
-  .opp-badge.high-spend-fix { background: rgba(160,64,64,0.10); color: var(--red); }
-  .opp-badge.unlock-scale { background: rgba(90,122,82,0.12); color: var(--green); }
-  .opp-badge.extend-winner { background: rgba(201,185,145,0.18); color: #8a7a50; }
-  .opp-name {
-    font-family: 'Apta', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1;
-  }
-  .opp-tag {
-    font-size: 10px;
-    color: var(--text-muted);
-    font-family: 'Apta', sans-serif;
-  }
-  .opp-brief {
-    font-size: 12.5px;
-    color: var(--text-dim);
-    line-height: 1.55;
-    margin-bottom: 12px;
-    font-family: 'Apta', sans-serif;
-  }
-  .opp-metrics {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .opp-metric {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-family: 'Apta', sans-serif;
-  }
-  .opp-metric strong {
-    color: var(--text);
-    font-weight: 600;
-  }
-
   /* ─── SITE NAV ─── */
   .site-nav {
     background: var(--bottle-green);
@@ -510,61 +99,253 @@
     font-weight: 600;
   }
 
-  /* ─── PRINT / PDF EXPORT ─── */
+  /* ─── HEADER ─── */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .header-logo { height: 32px; width: auto; }
+  .header-divider { width: 1px; height: 28px; background: var(--pale-sage); }
+  .header-title {
+    font-family: 'Larish Alte', Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .data-date-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    background: var(--off-white);
+    padding: 6px 14px;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .window-select {
+    font-family: 'Apta', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    background: var(--off-white);
+    border: 1px solid var(--border-strong);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  /* ─── OVERVIEW BAR ─── */
+  .overview-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .overview-stat {
+    flex: 1;
+    min-width: 140px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'Larish Alte', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 4px;
+  }
+
+  /* ─── METHODOLOGY BOX ─── */
+  .method-box {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.65;
+  }
+  .method-box strong { color: var(--text); font-weight: 600; }
+  .method-box code {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11.5px;
+    background: var(--surface);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  /* ─── PARALLEL LISTS ─── */
+  .lists-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+  .list-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .list-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .list-header h3 {
+    font-family: 'Larish Alte', Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .list-header .list-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--off-white);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  /* Table rows */
+  .rank-table { width: 100%; border-collapse: collapse; }
+  .rank-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    padding: 10px 12px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+    white-space: nowrap;
+  }
+  .rank-table th:first-child { padding-left: 20px; width: 36px; }
+  .rank-table th.num { text-align: right; }
+  .rank-table td {
+    font-size: 12.5px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .rank-table tr:last-child td { border-bottom: none; }
+  .rank-table td:first-child { padding-left: 20px; }
+  .rank-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .rank-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--off-white);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-dim);
+  }
+  .rank-num.top3 { background: var(--gold); color: #fff; }
+
+  .ad-name-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .ad-tag-cell {
+    font-size: 10px;
+    color: var(--text-muted);
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .metric-bad { color: var(--red); font-weight: 600; }
+  .metric-good { color: var(--green); font-weight: 600; }
+  .metric-neutral { color: var(--text); }
+  .metric-score {
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer {
+    text-align: center;
+    padding: 24px 0;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+  }
+  .footer::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--pale-sage);
+    margin: 0 auto 16px;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .lists-split { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .container { padding: 20px 16px; }
+    .overview-bar { flex-direction: column; }
+    .overview-stat { min-width: auto; }
+    .header { flex-direction: column; }
+    .rank-table th, .rank-table td { padding: 8px 8px; font-size: 11px; }
+    .ad-name-cell { max-width: 120px; }
+  }
+
+  /* ─── PRINT ─── */
   @media print {
-    @page {
-      size: A4 portrait;
-      margin: 12mm 10mm;
-    }
-    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-    body { background: #fff; }
     .site-nav { display: none; }
-    .container { max-width: 100%; padding: 0; }
-    .header { padding: 16px 0 12px; }
-    .header-logo { height: 28px; }
-    .data-date-label { font-size: 10px; }
-    .overview-bar { gap: 8px; margin-bottom: 16px; }
-    .overview-stat { padding: 10px 12px; }
-    .stat-value { font-size: 22px; }
-    .stat-label { font-size: 9px; }
-
-    .section { padding: 16px 0; break-inside: avoid; }
-    .section-title { font-size: 16px; }
-    .section-desc { font-size: 10px; }
-
-    /* Opportunity cards — single column, compact */
-    .opp-grid { grid-template-columns: 1fr; gap: 8px; }
-    .opp-card { padding: 12px 14px; break-inside: avoid; }
-    .opp-badge { font-size: 8px; padding: 2px 6px; }
-    .opp-name { font-size: 11px; }
-    .opp-brief { font-size: 10px; margin-bottom: 8px; }
-    .opp-metrics { gap: 10px; }
-    .opp-metric { font-size: 9px; }
-
-    /* Ad cards — keep 2-col but tighter */
-    .card-grid { gap: 8px; }
-    .card { padding: 12px; break-inside: avoid; }
-    .card-name { font-size: 11px; }
-    .card-tag { font-size: 9px; }
-    .card-metric { font-size: 22px; }
-    .mini-stat { font-size: 9px; }
-    .card-rank { font-size: 10px; width: 22px; height: 22px; }
-
-    /* Page breaks between major sections */
-    .section:nth-child(n+3) { break-before: auto; }
-    .section + .section { page-break-before: auto; }
-
-    /* Footer */
-    .footer { padding: 10px 0; font-size: 9px; }
-    .footer::before { margin-bottom: 8px; }
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 16px; }
   }
 </style>
 </head>
 <body>
 
 <nav class="site-nav">
-  <a href="index.html" class="active">Creative Performance</a>
-  <a href="hook-factory.html">Hook Factory</a>
+  <a href="index.html">Creative Performance</a>
+  <a href="hook-factory.html" class="active">Hook Factory</a>
 </nav>
 
 <div class="container" id="app"></div>
@@ -4342,403 +4123,209 @@ function mergeAds(ads) {
 // WINDOW CONFIG & RENDER ENTRY POINT
 // ═══════════════════════════════════════════════════
 const WINDOW_CFG = {
-  '7':  { minSpend: 20,  label: 'Last 7 Days' },
-  '14': { minSpend: 40,  label: 'Last 14 Days' },
   '30': { minSpend: 80,  label: 'Last 30 Days' },
+  '90': { minSpend: 80,  label: 'Last 90 Days' },
+  'all': { minSpend: 80, label: 'All Time' },
 };
 
-let currentWindow = '14';
+let currentWindow = '30';
 
 function renderDashboard(windowKey) {
   currentWindow = windowKey;
-  const ADS = ADS_BY_WINDOW[windowKey] || ADS_BY_WINDOW['14'] || [];
+  const ADS = ADS_BY_WINDOW[windowKey] || ADS_BY_WINDOW['30'] || [];
   const cfg = WINDOW_CFG[windowKey];
   const MERGED_ADS = mergeAds(ADS);
-
-// ═══════════════════════════════════════════════════
-// METRIC CALCULATIONS (inside renderDashboard)
-// ═══════════════════════════════════════════════════
   const MIN_SPEND = cfg.minSpend;
   const DATE_LABEL = cfg.label;
 
-  const qualifiedAds = MERGED_ADS.filter(a => a.spend >= MIN_SPEND);
+  // ─── Metric helpers ───
+  function hookRate(ad) {
+    return ad.impressions > 0 ? (ad.threeSecViews / ad.impressions * 100) : 0;
+  }
+  function holdRate(ad) {
+    return ad.threeSecViews > 0 ? (ad.thruPlays / ad.threeSecViews * 100) : 0;
+  }
+  function ctrPerView(ad) {
+    return ad.threeSecViews > 0 ? (ad.linkClicks / ad.threeSecViews * 100) : 0;
+  }
+  function fmt(n, d = 2) { return n.toFixed(d); }
+  function fmtNum(n) { return n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
-function hookRate(ad) {
-  return ad.impressions > 0 ? (ad.threeSecViews / ad.impressions * 100) : 0;
-}
-function holdRate(ad) {
-  return ad.threeSecViews > 0 ? (ad.thruPlays / ad.threeSecViews * 100) : 0;
-}
-function convRate(ad) {
-  return ad.linkClicks > 0 ? (ad.purchases / ad.linkClicks * 100) : 0;
-}
-function fmt(n, decimals = 2) {
-  return n.toFixed(decimals);
-}
-function fmtNum(n) {
-  return n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
-function fmtCurrency(n) {
-  return '\u00a3' + n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-}
-function fmtBigCurrency(n) {
-  if (n >= 1000) return '\u00a3' + (n/1000).toFixed(1) + 'k';
-  return '\u00a3' + n.toFixed(0);
-}
+  // ─── Filter to video ads with sufficient data ───
+  const videoAds = MERGED_ADS.filter(a =>
+    a.spend >= MIN_SPEND &&
+    a.isVideo &&
+    a.impressions >= 1000 &&
+    a.threeSecViews >= 100
+  );
 
-// ═══════════════════════════════════════════════════
-// SORTED LISTS
-// ═══════════════════════════════════════════════════
-const bySpend = [...qualifiedAds].sort((a, b) => b.spend - a.spend).slice(0, 8);
-const videoAds = qualifiedAds.filter(a => a.isVideo && a.threeSecViews > 50);
-const byHookBest = [...videoAds].sort((a, b) => hookRate(b) - hookRate(a)).slice(0, 4);
-const byHookWorst = [...videoAds].sort((a, b) => hookRate(a) - hookRate(b)).slice(0, 4);
-const byHoldBest = [...videoAds].sort((a, b) => holdRate(b) - holdRate(a)).slice(0, 4);
-const byHoldWorst = [...videoAds].sort((a, b) => holdRate(a) - holdRate(b)).slice(0, 4);
-const adsWithClicks = qualifiedAds.filter(a => a.linkClicks >= 20);
-const byConvBest = [...adsWithClicks].sort((a, b) => convRate(b) - convRate(a)).slice(0, 4);
-const byConvWorst = [...adsWithClicks].sort((a, b) => convRate(a) - convRate(b)).slice(0, 4);
+  // ─── Compute median hold rate ───
+  const holdRates = videoAds.map(a => holdRate(a)).sort((a, b) => a - b);
+  const medianHold = holdRates.length > 0
+    ? holdRates[Math.floor(holdRates.length / 2)]
+    : 0;
 
-// ═══════════════════════════════════════════════════
-// ITERATION OPPORTUNITY ANALYSIS
-// ═══════════════════════════════════════════════════
-function analyzeOpportunities() {
-  const ads = qualifiedAds.filter(a => a.isVideo && a.threeSecViews > 50);
-  if (ads.length < 3) return [];
+  // ─── Hook Opportunity Score ───
+  // Filter candidates: hold rate above median (strong content, weak hook)
+  const candidates = videoAds.filter(a => holdRate(a) >= medianHold);
 
-  const avgHook = ads.reduce((s, a) => s + hookRate(a), 0) / ads.length;
-  const avgHold = ads.reduce((s, a) => s + holdRate(a), 0) / ads.length;
-  const totalLinkClicks = qualifiedAds.reduce((s, a) => s + a.linkClicks, 0);
-  const totalPurch = qualifiedAds.reduce((s, a) => s + a.purchases, 0);
-  const avgConv = totalLinkClicks > 0 ? (totalPurch / totalLinkClicks * 100) : 0;
-  const spends = qualifiedAds.map(a => a.spend).sort((a, b) => a - b);
-  const medSpend = spends[Math.floor(spends.length / 2)];
-  const topQSpend = spends[Math.floor(spends.length * 0.75)];
-  const totalRev = qualifiedAds.reduce((s, a) => s + a.purchaseValue, 0);
-  const totalSp = qualifiedAds.reduce((s, a) => s + a.spend, 0);
-  const avgRoasAll = totalSp > 0 ? totalRev / totalSp : 0;
+  // Compute normalised hook rate (0-1 scale)
+  const hookRates = candidates.map(a => hookRate(a));
+  const minHook = Math.min(...hookRates);
+  const maxHook = Math.max(...hookRates);
+  const hookRange = maxHook - minHook;
 
-  const opps = [];
-  const seen = new Set();
+  function normHook(ad) {
+    if (hookRange === 0) return 0.5;
+    return (hookRate(ad) - minHook) / hookRange;
+  }
 
-  // 1) Good hook, bad hold → fix the middle
-  ads.filter(a => hookRate(a) > avgHook && holdRate(a) < avgHold * 0.85)
-    .sort((a, b) => b.spend - a.spend).slice(0, 3).forEach(ad => {
-      if (seen.has(ad.name)) return; seen.add(ad.name);
-      opps.push({ ad, type: 'fix-middle', label: 'Fix the Middle',
-        brief: `Hook rate ${fmt(hookRate(ad),1)}% beats avg (${fmt(avgHook,1)}%) but hold drops to ${fmt(holdRate(ad),1)}% vs ${fmt(avgHold,1)}% avg. The opening grabs attention — the mid-section loses it. Tighten pacing or add a pattern interrupt around the 3-5s mark.`,
-        priority: ad.spend * (avgHold - holdRate(ad)) / avgHold });
-    });
+  function hookScore(ad) {
+    const hold = holdRate(ad) / 100;
+    const ctr = ctrPerView(ad) / 100;
+    const invHook = 1 - normHook(ad);
+    return hold * ctr * invHook;
+  }
 
-  // 2) Bad hook, good hold → new hook needed
-  ads.filter(a => hookRate(a) < avgHook * 0.85 && holdRate(a) > avgHold)
-    .sort((a, b) => b.spend - a.spend).slice(0, 3).forEach(ad => {
-      if (seen.has(ad.name)) return; seen.add(ad.name);
-      opps.push({ ad, type: 'new-hook', label: 'New Hook Needed',
-        brief: `Hold rate ${fmt(holdRate(ad),1)}% is strong (avg ${fmt(avgHold,1)}%) but hook is only ${fmt(hookRate(ad),1)}% vs ${fmt(avgHook,1)}% avg. The content works — people just aren't stopping. Test a new opening frame or first-second visual hook.`,
-        priority: ad.spend * (avgHook - hookRate(ad)) / avgHook });
-    });
+  // Rank by hook opportunity score (highest = best swap candidate)
+  const swapCandidates = [...candidates]
+    .map(ad => ({ ...ad, _score: hookScore(ad) }))
+    .sort((a, b) => b._score - a._score)
+    .slice(0, 20);
 
-  // 3) High spend, mediocre returns → high-spend fix
-  qualifiedAds.filter(a => a.spend >= topQSpend && a.purchaseValue / a.spend < avgRoasAll * 0.9)
-    .sort((a, b) => b.spend - a.spend).slice(0, 3).forEach(ad => {
-      if (seen.has(ad.name)) return; seen.add(ad.name);
-      const roas = ad.spend > 0 ? ad.purchaseValue / ad.spend : 0;
-      opps.push({ ad, type: 'high-spend-fix', label: 'High Spend, Low Return',
-        brief: `£${fmtNum(ad.spend)} spend (top quartile) but ${fmt(roas,1)}x ROAS vs ${fmt(avgRoasAll,1)}x avg. The algorithm is pushing this but returns aren't there. Review targeting or test a stronger CTA.`,
-        priority: ad.spend * (avgRoasAll - roas) / avgRoasAll });
-    });
+  // Best hook rates (inspiration) — all qualifying video ads, not just above-median hold
+  const bestHooks = [...videoAds]
+    .sort((a, b) => hookRate(b) - hookRate(a))
+    .slice(0, 20);
 
-  // 4) Strong conversion, low spend → ready to scale
-  const convAds = qualifiedAds.filter(a => a.linkClicks >= 20);
-  convAds.filter(a => convRate(a) > avgConv * 1.3 && a.spend < medSpend)
-    .sort((a, b) => convRate(b) - convRate(a)).slice(0, 3).forEach(ad => {
-      if (seen.has(ad.name)) return; seen.add(ad.name);
-      opps.push({ ad, type: 'unlock-scale', label: 'Ready to Scale',
-        brief: `${fmt(convRate(ad),1)}% conversion rate (avg ${fmt(avgConv,1)}%) on only £${fmtNum(ad.spend)} spend. This converts when it gets shown — it just isn't getting distribution. Consider increasing budget or broadening the audience.`,
-        priority: (convRate(ad) / avgConv) * 100 });
-    });
+  // ─── Overview stats ───
+  const avgHook = videoAds.length > 0
+    ? videoAds.reduce((s, a) => s + hookRate(a), 0) / videoAds.length : 0;
+  const avgCtrView = videoAds.length > 0
+    ? videoAds.reduce((s, a) => s + ctrPerView(a), 0) / videoAds.length : 0;
 
-  // 5) Winner worth extending
-  qualifiedAds.filter(a => a.spend >= topQSpend && a.purchaseValue / a.spend >= avgRoasAll)
-    .sort((a, b) => b.purchaseValue / b.spend - a.purchaseValue / a.spend).slice(0, 2).forEach(ad => {
-      if (seen.has(ad.name)) return; seen.add(ad.name);
-      const roas = ad.spend > 0 ? ad.purchaseValue / ad.spend : 0;
-      opps.push({ ad, type: 'extend-winner', label: 'Extend This Winner',
-        brief: `${fmt(roas,1)}x ROAS at £${fmtNum(ad.spend)} spend — a proven performer. Create variations: test new thumbnails, tweak the CTA copy, or reshoot the intro to extend its lifespan before fatigue sets in.`,
-        priority: ad.spend * roas });
-    });
+  // ─── Render table rows ───
+  function swapRow(ad, i) {
+    return `<tr>
+      <td><span class="rank-num ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+      <td class="ad-name-cell" title="${ad.fullName || ad.name}">${ad.name}</td>
+      <td class="ad-tag-cell" title="${ad.tag}">${ad.tag}</td>
+      <td class="num metric-score">${ad._score.toFixed(4)}</td>
+      <td class="num metric-bad">${fmt(hookRate(ad), 1)}%</td>
+      <td class="num metric-good">${fmt(holdRate(ad), 1)}%</td>
+      <td class="num metric-neutral">${fmt(ctrPerView(ad), 2)}%</td>
+    </tr>`;
+  }
 
-  return opps.sort((a, b) => b.priority - a.priority);
-}
+  function hookRow(ad, i) {
+    return `<tr>
+      <td><span class="rank-num ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+      <td class="ad-name-cell" title="${ad.fullName || ad.name}">${ad.name}</td>
+      <td class="ad-tag-cell" title="${ad.tag}">${ad.tag}</td>
+      <td class="num metric-good" style="font-weight:700">${fmt(hookRate(ad), 1)}%</td>
+      <td class="num metric-neutral">${fmt(holdRate(ad), 1)}%</td>
+      <td class="num metric-neutral">${fmt(ctrPerView(ad), 2)}%</td>
+    </tr>`;
+  }
 
-const opportunities = analyzeOpportunities();
+  // ─── Build HTML ───
+  const windowOptions = Object.entries(WINDOW_CFG).map(([k, v]) =>
+    `<option value="${k}" ${k === windowKey ? 'selected' : ''}>${v.label}</option>`
+  ).join('');
 
-// ═══════════════════════════════════════════════════
-// ACCOUNT OVERVIEW
-// ═══════════════════════════════════════════════════
-const totalSpend = qualifiedAds.reduce((s, a) => s + a.spend, 0);
-const totalPurchases = qualifiedAds.reduce((s, a) => s + a.purchases, 0);
-const totalRevenue = qualifiedAds.reduce((s, a) => s + a.purchaseValue, 0);
-const avgRoas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
-const totalImpressions = qualifiedAds.reduce((s, a) => s + a.impressions, 0);
-const total3s = qualifiedAds.reduce((s, a) => s + a.threeSecViews, 0);
-const totalThru = qualifiedAds.reduce((s, a) => s + a.thruPlays, 0);
-const overallHook = totalImpressions > 0 ? (total3s / totalImpressions * 100) : 0;
-const overallHold = total3s > 0 ? (totalThru / total3s * 100) : 0;
+  const swapRows = swapCandidates.length > 0
+    ? swapCandidates.map((ad, i) => swapRow(ad, i)).join('')
+    : `<tr><td colspan="7" class="empty-state">No candidates found \u2014 try a longer time window</td></tr>`;
 
-// ═══════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════
-function renderCard(ad, rank, metricHtml, statsHtml, extraClass = '') {
-  return `
-    <div class="card rank-${rank} ${extraClass}">
-      <div class="card-rank">#${rank}</div>
-      <div class="card-name" title="${ad.fullName}">${ad.name}</div>
-      <div class="card-tag">${ad.tag}</div>
-      ${metricHtml}
-      <div class="card-stats${statsHtml.cols === 3 ? ' three-col' : ''}">
-        ${statsHtml.html}
+  const hookRows = bestHooks.length > 0
+    ? bestHooks.map((ad, i) => hookRow(ad, i)).join('')
+    : `<tr><td colspan="6" class="empty-state">No qualifying video ads found</td></tr>`;
+
+  document.getElementById('app').innerHTML = `
+    <div class="header">
+      <div class="header-left">
+        <img src="assets/gloved-logo.png" alt="Gloved" class="header-logo">
+        <div class="header-divider"></div>
+        <h1 class="header-title">Hook Factory</h1>
       </div>
+      <div class="header-right">
+        <div class="data-date-label">\ud83c\udfa3 ${DATE_LABEL}</div>
+        <select class="window-select" onchange="renderDashboard(this.value)">
+          ${windowOptions}
+        </select>
+      </div>
+    </div>
+
+    <div class="overview-bar">
+      <div class="overview-stat">
+        <div class="stat-value">${videoAds.length}</div>
+        <div class="stat-label">Video Ads Analyzed</div>
+      </div>
+      <div class="overview-stat">
+        <div class="stat-value">${swapCandidates.length}</div>
+        <div class="stat-label">Hook Swap Candidates</div>
+      </div>
+      <div class="overview-stat">
+        <div class="stat-value">${fmt(avgHook, 1)}%</div>
+        <div class="stat-label">Avg Hook Rate</div>
+      </div>
+      <div class="overview-stat">
+        <div class="stat-value">${fmt(medianHold, 1)}%</div>
+        <div class="stat-label">Median Hold Rate</div>
+      </div>
+      <div class="overview-stat">
+        <div class="stat-value">${fmt(avgCtrView, 2)}%</div>
+        <div class="stat-label">Avg CTR / View</div>
+      </div>
+    </div>
+
+    <div class="method-box">
+      <strong>How it works:</strong> We identify video ads with strong content (high hold rate, good CTR per view)
+      but a weak opening hook. These are prime candidates for a <strong>hook swap</strong> \u2014 the creative already converts
+      once people watch, so a better hook could unlock significantly more reach.<br><br>
+      <strong>Score</strong> = <code>Hold Rate \u00d7 CTR/View \u00d7 (1 \u2212 Normalised Hook Rate)</code><br>
+      Minimum thresholds: \u22651,000 impressions, \u2265100 three-second views, hold rate above account median.
+    </div>
+
+    <div class="lists-split">
+      <div class="list-panel">
+        <div class="list-header">
+          <h3>\ud83d\udd04 Hook Swap Candidates</h3>
+          <span class="list-count">Top ${swapCandidates.length}</span>
+        </div>
+        <table class="rank-table">
+          <thead><tr>
+            <th>#</th><th>Ad Name</th><th>Tag</th>
+            <th class="num">Score</th><th class="num">Hook</th>
+            <th class="num">Hold</th><th class="num">CTR/View</th>
+          </tr></thead>
+          <tbody>${swapRows}</tbody>
+        </table>
+      </div>
+
+      <div class="list-panel">
+        <div class="list-header">
+          <h3>\u2b50 Best Hook Rates</h3>
+          <span class="list-count">Top ${bestHooks.length}</span>
+        </div>
+        <table class="rank-table">
+          <thead><tr>
+            <th>#</th><th>Ad Name</th><th>Tag</th>
+            <th class="num">Hook</th><th class="num">Hold</th>
+            <th class="num">CTR/View</th>
+          </tr></thead>
+          <tbody>${hookRows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="footer">
+      Gloved \u00b7 Hook Factory \u00b7 ${DATE_LABEL}
     </div>
   `;
 }
 
-function miniStat(val, label) {
-  return `<div class="mini-stat"><div class="ms-val">${val}</div><div class="ms-label">${label}</div></div>`;
-}
-
-// SPEND CARDS
-const spendCards = bySpend.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric spend-color">${fmtCurrency(ad.spend)}</div>`,
-  { html: miniStat(fmt(ad.roas, 2) + 'x', 'ROAS') +
-          miniStat(ad.purchases, 'Purchases') +
-          miniStat(fmt(ad.ctr, 1) + '%', 'CTR'),
-    cols: 3 }
-)).join('');
-
-// HOOK CARDS
-const bestHookCards = byHookBest.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-good">${fmt(hookRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
-          miniStat(ad.impressions.toLocaleString(), 'Impress.') +
-          miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 },
-  'best'
-)).join('');
-
-const worstHookCards = byHookWorst.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-bad">${fmt(hookRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
-          miniStat(ad.impressions.toLocaleString(), 'Impress.') +
-          miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 },
-  'worst'
-)).join('');
-
-// HOLD CARDS
-const bestHoldCards = byHoldBest.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-good">${fmt(holdRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.thruPlays.toLocaleString(), 'ThruPlays') +
-          miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
-          miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 },
-  'best'
-)).join('');
-
-const worstHoldCards = byHoldWorst.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-bad">${fmt(holdRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.thruPlays.toLocaleString(), 'ThruPlays') +
-          miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
-          miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 },
-  'worst'
-)).join('');
-
-// CONVERSION CARDS
-const bestConvCards = byConvBest.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-good">${fmt(convRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.purchases, 'Purchases') +
-          miniStat(ad.linkClicks, 'Link Clicks') +
-          miniStat(fmtCurrency(ad.spend), 'Spend'),
-    cols: 3 },
-  'best'
-)).join('');
-
-const worstConvCards = byConvWorst.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric conv-bad">${fmt(convRate(ad), 1)}%</div>`,
-  { html: miniStat(ad.purchases, 'Purchases') +
-          miniStat(ad.linkClicks, 'Link Clicks') +
-          miniStat(fmtCurrency(ad.spend), 'Spend'),
-    cols: 3 },
-  'worst'
-)).join('');
-
-const oppCards = opportunities.map(o => `
-  <div class="opp-card ${o.type}">
-    <div class="opp-top">
-      <span class="opp-badge ${o.type}">${o.label}</span>
-      <span class="opp-name" title="${o.ad.name}">${o.ad.name}</span>
-    </div>
-    ${o.ad.tag ? `<div class="opp-tag">${o.ad.tag}</div>` : ''}
-    <div class="opp-brief">${o.brief}</div>
-    <div class="opp-metrics">
-      <div class="opp-metric"><strong>£${fmtNum(o.ad.spend)}</strong> spend</div>
-      ${o.ad.isVideo ? `<div class="opp-metric"><strong>${fmt(hookRate(o.ad),1)}%</strong> hook</div>
-      <div class="opp-metric"><strong>${fmt(holdRate(o.ad),1)}%</strong> hold</div>` : ''}
-      ${o.ad.linkClicks >= 20 ? `<div class="opp-metric"><strong>${fmt(convRate(o.ad),1)}%</strong> conv</div>` : ''}
-      <div class="opp-metric"><strong>${o.ad.spend > 0 ? fmt(o.ad.purchaseValue / o.ad.spend, 1) : '0.0'}x</strong> ROAS</div>
-    </div>
-  </div>
-`).join('');
-
-document.getElementById('app').innerHTML = `
-  <!-- HEADER -->
-  <div class="header">
-    <div class="header-left">
-      <img src="assets/logos/Gloved_Logo_Horizontal_RGB_BottleGreen.png" alt="Gloved" class="header-logo">
-      <div class="header-divider"></div>
-      <div class="header-text">
-        <h1>Creative Performance</h1>
-        <div class="subtitle">Ad iteration insights &mdash; ${DATE_LABEL}</div>
-      </div>
-    </div>
-    <div class="data-date-label">
-      Data snapshot &mdash;
-      <select class="window-select" onchange="renderDashboard(this.value)">
-        <option value="7" ${currentWindow === '7' ? 'selected' : ''}>Last 7 Days</option>
-        <option value="14" ${currentWindow === '14' ? 'selected' : ''}>Last 14 Days</option>
-        <option value="30" ${currentWindow === '30' ? 'selected' : ''}>Last 30 Days</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- OVERVIEW -->
-  <div class="overview-bar">
-    <div class="overview-stat">
-      <div class="stat-value">${fmtCurrency(totalSpend)}</div>
-      <div class="stat-label">Total Spend</div>
-    </div>
-    <div class="overview-stat">
-      <div class="stat-value">${totalPurchases}</div>
-      <div class="stat-label">Purchases</div>
-    </div>
-    <div class="overview-stat">
-      <div class="stat-value">${fmt(avgRoas, 2)}x</div>
-      <div class="stat-label">ROAS</div>
-    </div>
-    <div class="overview-stat">
-      <div class="stat-value">${fmt(overallHook, 1)}%</div>
-      <div class="stat-label">Avg Hook Rate</div>
-    </div>
-    <div class="overview-stat">
-      <div class="stat-value">${fmt(overallHold, 1)}%</div>
-      <div class="stat-label">Avg Hold Rate</div>
-    </div>
-    <div class="overview-stat">
-      <div class="stat-value">\u00a3${(totalSpend / totalPurchases).toFixed(0)}</div>
-      <div class="stat-label">Avg CPA</div>
-    </div>
-  </div>
-
-  <!-- ITERATION OPPORTUNITIES -->
-  ${opportunities.length > 0 ? `
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon iterate">💡</div>
-      <div>
-        <div class="section-title">Ripe for Iteration</div>
-        <div class="section-desc">Ads with the most potential for improvement based on metric analysis against cohort averages</div>
-      </div>
-    </div>
-    <div class="opp-grid">${oppCards}</div>
-  </div>` : ''}
-
-  <!-- SECTION 1: TOP SPEND -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon spend">\ud83d\udcb0</div>
-      <div>
-        <div class="section-title">Top Spenders</div>
-        <div class="section-desc">Where Meta is putting the budget. These creatives are getting the most delivery &mdash; iterate on what\u2019s working here.</div>
-      </div>
-    </div>
-    <div class="card-grid">${spendCards}</div>
-  </div>
-
-  <!-- SECTION 2: HOOK RATE -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon hook">\ud83c\udfa3</div>
-      <div>
-        <div class="section-title">Hook Rate</div>
-        <div class="section-desc">3-second views \u00f7 impressions. Best = openings that stop the scroll. Worst = high spend but people scroll past &mdash; test a new first frame.</div>
-      </div>
-    </div>
-    <div class="conv-split">
-      <div class="conv-group">
-        <h3><span class="dot green"></span> Best Hook Rate</h3>
-        <div class="card-grid">${bestHookCards}</div>
-      </div>
-      <div class="conv-group">
-        <h3><span class="dot red"></span> Worst Hook Rate</h3>
-        <div class="card-grid">${worstHookCards}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 3: HOLD RATE -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon hold">\u23f3</div>
-      <div>
-        <div class="section-title">Hold Rate</div>
-        <div class="section-desc">ThruPlays (15s+) \u00f7 3-second views. Best = strong mid-section content. Worst = people leave after the hook &mdash; tighten pacing or add a pattern interrupt.</div>
-      </div>
-    </div>
-    <div class="conv-split">
-      <div class="conv-group">
-        <h3><span class="dot green"></span> Best Hold Rate</h3>
-        <div class="card-grid">${bestHoldCards}</div>
-      </div>
-      <div class="conv-group">
-        <h3><span class="dot red"></span> Worst Hold Rate</h3>
-        <div class="card-grid">${worstHoldCards}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SECTION 4: CONVERSION RATE -->
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon conv">\ud83c\udfaf</div>
-      <div>
-        <div class="section-title">Conversion Rate</div>
-        <div class="section-desc">Purchases \u00f7 link clicks. Best = creatives that close the sale. Worst = high traffic but poor conversion &mdash; fix the CTA or landing alignment.</div>
-      </div>
-    </div>
-    <div class="conv-split">
-      <div class="conv-group">
-        <h3><span class="dot green"></span> Best Converters</h3>
-        <div class="card-grid">${bestConvCards}</div>
-      </div>
-      <div class="conv-group">
-        <h3><span class="dot red"></span> Worst Converters</h3>
-        <div class="card-grid">${worstConvCards}</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="gold-line"></div>
-    Meta Ads API \u00b7 Min. \u00a3${MIN_SPEND} spend (${DATE_LABEL.toLowerCase()}) \u00b7 ${new Date().toLocaleDateString('en-GB')} \u00b7 gloved.co.uk
-  </div>
-`;
-}
-
-// Initial render
-renderDashboard('14');
+renderDashboard('30');
 </script>
 </body>
 </html>

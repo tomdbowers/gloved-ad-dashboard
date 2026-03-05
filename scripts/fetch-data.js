@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Fetch fresh ad data from Meta Marketing API and update index.html
- * Runs weekly via GitHub Actions or manually via `node scripts/fetch-data.js`
+ * Fetch fresh ad data from Meta Marketing API and update dashboard HTML files
+ * Runs daily via GitHub Actions or manually via `node scripts/fetch-data.js`
  *
  * Required env: META_ACCESS_TOKEN
  */
@@ -22,6 +22,8 @@ const WINDOWS = {
   '7':  { preset: 'last_7d',  minSpend: 50,  label: 'Last 7 Days' },
   '14': { preset: 'last_14d', minSpend: 100, label: 'Last 14 Days' },
   '30': { preset: 'last_30d', minSpend: 200, label: 'Last 30 Days' },
+  '90': { preset: 'last_90d', minSpend: 200, label: 'Last 90 Days' },
+  'all': { timeRange: { since: '2020-01-01' }, minSpend: 200, label: 'All Time' },
 };
 
 // ─── HTTP helper ────────────────────────────────────────────
@@ -50,7 +52,7 @@ async function getAdAccounts() {
   return res.data || [];
 }
 
-async function getAdInsights(accountId, datePreset) {
+async function getAdInsights(accountId, cfg) {
   const fields = [
     'ad_name', 'campaign_name', 'adset_name',
     'spend', 'impressions', 'clicks', 'inline_link_clicks', 'ctr',
@@ -61,7 +63,14 @@ async function getAdInsights(accountId, datePreset) {
   ].join(',');
 
   let all = [];
-  let url = `${BASE}/${accountId}/insights?level=ad&fields=${fields}&date_preset=${datePreset}&limit=200&access_token=${ACCESS_TOKEN}`;
+  let timeParam;
+  if (cfg.timeRange) {
+    const until = new Date().toISOString().slice(0, 10);
+    timeParam = `time_range=${encodeURIComponent(JSON.stringify({ since: cfg.timeRange.since, until }))}`;
+  } else {
+    timeParam = `date_preset=${cfg.preset}`;
+  }
+  let url = `${BASE}/${accountId}/insights?level=ad&fields=${fields}&${timeParam}&limit=200&access_token=${ACCESS_TOKEN}`;
 
   while (url) {
     const res = await fetchJSON(url);
@@ -219,7 +228,7 @@ async function main() {
 
     for (const acct of accounts) {
       console.log(`   📊 ${acct.name || acct.id} (${acct.currency || '?'})…`);
-      const rows = await getAdInsights(acct.id, cfg.preset);
+      const rows = await getAdInsights(acct.id, cfg);
       console.log(`      → ${rows.length} ad rows`);
       const ads = rows.map(r => transformRow(r, cfg.minSpend)).filter(Boolean);
       allAds = allAds.concat(ads);
@@ -230,16 +239,8 @@ async function main() {
     console.log(`   ✅ ${allAds.length} qualifying ads (spend ≥ £${cfg.minSpend})`);
   }
 
-  // ── Update index.html ──
-  const htmlPath = path.join(__dirname, '..', 'index.html');
-  let html = fs.readFileSync(htmlPath, 'utf-8');
-
-  const marker = /\/\/ __ADS_DATA_START__[\s\S]*?\/\/ __ADS_DATA_END__/;
-  if (!marker.test(html)) {
-    throw new Error('Could not find __ADS_DATA_START__ / __ADS_DATA_END__ markers in index.html');
-  }
-
-  const block = [
+  // ── Inject data into HTML files ──
+  const dataBlock = [
     '// __ADS_DATA_START__',
     '// RAW AD DATA — multi-window (pulled from Meta Ads)',
     `// Auto-generated ${new Date().toISOString().slice(0, 10)}`,
@@ -247,9 +248,28 @@ async function main() {
     '// __ADS_DATA_END__'
   ].join('\n');
 
-  html = html.replace(marker, block);
-  fs.writeFileSync(htmlPath, html, 'utf-8');
-  console.log('\n📝 index.html updated with fresh data (7d / 14d / 30d)');
+  const marker = /\/\/ __ADS_DATA_START__[\s\S]*?\/\/ __ADS_DATA_END__/;
+
+  function updateFile(filePath) {
+    if (!fs.existsSync(filePath)) return false;
+    let html = fs.readFileSync(filePath, 'utf-8');
+    if (!marker.test(html)) {
+      console.warn(`   ⚠️  No data markers in ${path.basename(filePath)} — skipping`);
+      return false;
+    }
+    html = html.replace(marker, dataBlock);
+    fs.writeFileSync(filePath, html, 'utf-8');
+    return true;
+  }
+
+  const indexPath = path.join(__dirname, '..', 'index.html');
+  const hookPath  = path.join(__dirname, '..', 'hook-factory.html');
+
+  if (updateFile(indexPath)) console.log('\n📝 index.html updated');
+  if (updateFile(hookPath))  console.log('📝 hook-factory.html updated');
+
+  const windows = Object.values(WINDOWS).map(w => w.label).join(' / ');
+  console.log(`   Data windows: ${windows}`);
 }
 
 main().catch(err => {
