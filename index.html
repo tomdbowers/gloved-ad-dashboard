@@ -4360,8 +4360,10 @@ function fmtBigCurrency(n) {
 // ═══════════════════════════════════════════════════
 const bySpend = [...qualifiedAds].sort((a, b) => b.spend - a.spend).slice(0, 8);
 const videoAds = qualifiedAds.filter(a => a.isVideo && a.threeSecViews > 50);
-const byHook = [...videoAds].sort((a, b) => hookRate(b) - hookRate(a)).slice(0, 8);
-const byHold = [...videoAds].sort((a, b) => holdRate(b) - holdRate(a)).slice(0, 8);
+const byHookBest = [...videoAds].sort((a, b) => hookRate(b) - hookRate(a)).slice(0, 4);
+const byHookWorst = [...videoAds].sort((a, b) => hookRate(a) - hookRate(b)).slice(0, 4);
+const byHoldBest = [...videoAds].sort((a, b) => holdRate(b) - holdRate(a)).slice(0, 4);
+const byHoldWorst = [...videoAds].sort((a, b) => holdRate(a) - holdRate(b)).slice(0, 4);
 const adsWithClicks = qualifiedAds.filter(a => a.linkClicks >= 20);
 const byConvBest = [...adsWithClicks].sort((a, b) => convRate(b) - convRate(a)).slice(0, 4);
 const byConvWorst = [...adsWithClicks].sort((a, b) => convRate(a) - convRate(b)).slice(0, 4);
@@ -4485,21 +4487,41 @@ const spendCards = bySpend.map((ad, i) => renderCard(ad, i + 1,
 )).join('');
 
 // HOOK CARDS
-const hookCards = byHook.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric hook-color">${fmt(hookRate(ad), 1)}%</div>`,
+const bestHookCards = byHookBest.map((ad, i) => renderCard(ad, i + 1,
+  `<div class="card-metric conv-good">${fmt(hookRate(ad), 1)}%</div>`,
   { html: miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
           miniStat(ad.impressions.toLocaleString(), 'Impress.') +
           miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 }
+    cols: 3 },
+  'best'
+)).join('');
+
+const worstHookCards = byHookWorst.map((ad, i) => renderCard(ad, i + 1,
+  `<div class="card-metric conv-bad">${fmt(hookRate(ad), 1)}%</div>`,
+  { html: miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
+          miniStat(ad.impressions.toLocaleString(), 'Impress.') +
+          miniStat(ad.avgPlayTime, 'Avg Play'),
+    cols: 3 },
+  'worst'
 )).join('');
 
 // HOLD CARDS
-const holdCards = byHold.map((ad, i) => renderCard(ad, i + 1,
-  `<div class="card-metric hold-color">${fmt(holdRate(ad), 1)}%</div>`,
+const bestHoldCards = byHoldBest.map((ad, i) => renderCard(ad, i + 1,
+  `<div class="card-metric conv-good">${fmt(holdRate(ad), 1)}%</div>`,
   { html: miniStat(ad.thruPlays.toLocaleString(), 'ThruPlays') +
           miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
           miniStat(ad.avgPlayTime, 'Avg Play'),
-    cols: 3 }
+    cols: 3 },
+  'best'
+)).join('');
+
+const worstHoldCards = byHoldWorst.map((ad, i) => renderCard(ad, i + 1,
+  `<div class="card-metric conv-bad">${fmt(holdRate(ad), 1)}%</div>`,
+  { html: miniStat(ad.thruPlays.toLocaleString(), 'ThruPlays') +
+          miniStat(ad.threeSecViews.toLocaleString(), '3s Views') +
+          miniStat(ad.avgPlayTime, 'Avg Play'),
+    cols: 3 },
+  'worst'
 )).join('');
 
 // CONVERSION CARDS
@@ -4613,28 +4635,46 @@ document.getElementById('app').innerHTML = `
     <div class="card-grid">${spendCards}</div>
   </div>
 
-  <!-- SECTION 2: BEST HOOK RATE -->
+  <!-- SECTION 2: HOOK RATE -->
   <div class="section">
     <div class="section-header">
       <div class="section-icon hook">\ud83c\udfa3</div>
       <div>
-        <div class="section-title">Best Hook Rate</div>
-        <div class="section-desc">3-second views \u00f7 impressions. These openings stop the scroll &mdash; study the first 3 seconds of these creatives.</div>
+        <div class="section-title">Hook Rate</div>
+        <div class="section-desc">3-second views \u00f7 impressions. Best = openings that stop the scroll. Worst = high spend but people scroll past &mdash; test a new first frame.</div>
       </div>
     </div>
-    <div class="card-grid">${hookCards}</div>
+    <div class="conv-split">
+      <div class="conv-group">
+        <h3><span class="dot green"></span> Best Hook Rate</h3>
+        <div class="card-grid">${bestHookCards}</div>
+      </div>
+      <div class="conv-group">
+        <h3><span class="dot red"></span> Worst Hook Rate</h3>
+        <div class="card-grid">${worstHookCards}</div>
+      </div>
+    </div>
   </div>
 
-  <!-- SECTION 3: BEST HOLD RATE -->
+  <!-- SECTION 3: HOLD RATE -->
   <div class="section">
     <div class="section-header">
       <div class="section-icon hold">\u23f3</div>
       <div>
-        <div class="section-title">Best Hold Rate</div>
-        <div class="section-desc">ThruPlays (15s+) \u00f7 3-second views. These ads keep people watching after the hook &mdash; the middle content is strong.</div>
+        <div class="section-title">Hold Rate</div>
+        <div class="section-desc">ThruPlays (15s+) \u00f7 3-second views. Best = strong mid-section content. Worst = people leave after the hook &mdash; tighten pacing or add a pattern interrupt.</div>
       </div>
     </div>
-    <div class="card-grid">${holdCards}</div>
+    <div class="conv-split">
+      <div class="conv-group">
+        <h3><span class="dot green"></span> Best Hold Rate</h3>
+        <div class="card-grid">${bestHoldCards}</div>
+      </div>
+      <div class="conv-group">
+        <h3><span class="dot red"></span> Worst Hold Rate</h3>
+        <div class="card-grid">${worstHoldCards}</div>
+      </div>
+    </div>
   </div>
 
   <!-- SECTION 4: CONVERSION RATE -->
