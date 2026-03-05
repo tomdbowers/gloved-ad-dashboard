@@ -19,9 +19,9 @@ if (!ACCESS_TOKEN) {
 const API_VERSION = 'v21.0';
 const BASE = `https://graph.facebook.com/${API_VERSION}`;
 const WINDOWS = {
-  '7':  { preset: 'last_7d',  minSpend: 20,  label: 'Last 7 Days' },
-  '14': { preset: 'last_14d', minSpend: 40,  label: 'Last 14 Days' },
-  '30': { preset: 'last_30d', minSpend: 80,  label: 'Last 30 Days' },
+  '7':  { preset: 'last_7d',  minSpend: 50,  label: 'Last 7 Days' },
+  '14': { preset: 'last_14d', minSpend: 100, label: 'Last 14 Days' },
+  '30': { preset: 'last_30d', minSpend: 200, label: 'Last 30 Days' },
 };
 
 // ─── HTTP helper ────────────────────────────────────────────
