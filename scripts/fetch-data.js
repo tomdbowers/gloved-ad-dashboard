@@ -23,7 +23,7 @@ const WINDOWS = {
   '14': { preset: 'last_14d', minSpend: 100, label: 'Last 14 Days' },
   '30': { preset: 'last_30d', minSpend: 200, label: 'Last 30 Days' },
   '90': { preset: 'last_90d', minSpend: 200, label: 'Last 90 Days' },
-  'all': { timeRange: { since: '2020-01-01' }, minSpend: 200, label: 'All Time' },
+  'all': { timeRange: { since: (() => { const d = new Date(); d.setMonth(d.getMonth() - 36); return d.toISOString().slice(0, 10); })() }, minSpend: 200, label: 'All Time' },
 };
 
 // ─── HTTP helper ────────────────────────────────────────────
