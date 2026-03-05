@@ -4152,11 +4152,13 @@ function renderDashboard(windowKey) {
   function fmtNum(n) { return n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
   // ─── Filter to video ads with sufficient data ───
+  // Exclude sub-7-second ads (animated GIFs / short loops — not real hook-swappable videos)
   const videoAds = MERGED_ADS.filter(a =>
     a.spend >= MIN_SPEND &&
     a.isVideo &&
     a.impressions >= 1000 &&
-    a.threeSecViews >= 100
+    a.threeSecViews >= 100 &&
+    parsePlayTime(a.avgPlayTime) >= 7
   );
 
   // ─── Compute median hold rate ───
@@ -4284,7 +4286,7 @@ function renderDashboard(windowKey) {
       but a weak opening hook. These are prime candidates for a <strong>hook swap</strong> \u2014 the creative already converts
       once people watch, so a better hook could unlock significantly more reach.<br><br>
       <strong>Score</strong> = <code>Hold Rate \u00d7 CTR/View \u00d7 (1 \u2212 Normalised Hook Rate)</code><br>
-      Minimum thresholds: \u22651,000 impressions, \u2265100 three-second views, hold rate above account median.
+      Minimum thresholds: \u22657 s average play time, \u22651,000 impressions, \u2265100 three-second views, hold rate above account median.
     </div>
 
     <div class="lists-split">
