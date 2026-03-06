@@ -10960,24 +10960,25 @@ function renderDashboard(windowKey) {
   function fmtNum(n) { return n.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
 
   // ─── Filter to video ads with sufficient data ───
-  // Exclude sub-7-second ads (animated GIFs / short loops — not real hook-swappable videos)
+  // Sanity bounds exclude animated GIFs / loops (impossibly high hold or CTR)
   const videoAds = MERGED_ADS.filter(a =>
     a.spend >= MIN_SPEND &&
     a.isVideo &&
     a.impressions >= 1000 &&
     a.threeSecViews >= 100 &&
-    parsePlayTime(a.avgPlayTime) >= 7
+    holdRate(a) <= 90 &&
+    ctrPerView(a) <= 100
   );
 
-  // ─── Compute median hold rate ───
+  // ─── Compute median hold rate (for display only) ───
   const holdRates = videoAds.map(a => holdRate(a)).sort((a, b) => a - b);
   const medianHold = holdRates.length > 0
     ? holdRates[Math.floor(holdRates.length / 2)]
     : 0;
 
   // ─── Hook Opportunity Score ───
-  // Filter candidates: hold rate above median (strong content, weak hook)
-  const candidates = videoAds.filter(a => holdRate(a) >= medianHold);
+  // All qualifying video ads are candidates — low hook + strong content = high score
+  const candidates = videoAds;
 
   // Compute normalised hook rate (0-1 scale)
   const hookRates = candidates.map(a => hookRate(a));
@@ -11094,7 +11095,7 @@ function renderDashboard(windowKey) {
       but a weak opening hook. These are prime candidates for a <strong>hook swap</strong> \u2014 the creative already converts
       once people watch, so a better hook could unlock significantly more reach.<br><br>
       <strong>Score</strong> = <code>Hold Rate \u00d7 CTR/View \u00d7 (1 \u2212 Normalised Hook Rate)</code><br>
-      Minimum thresholds: \u22657 s average play time, \u22651,000 impressions, \u2265100 three-second views, hold rate above account median.
+      Minimum thresholds: \u22651,000 impressions, \u2265100 three-second views. Animated GIFs excluded via sanity bounds (hold rate \u226490%, CTR/view \u2264100%).
     </div>
 
     <div class="lists-split">
